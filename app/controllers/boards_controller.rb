@@ -3,7 +3,7 @@ class BoardsController < ApplicationController
 
   def index
     @boards = params[:tag_id].present? ? Tag.find(params[:tag_id]).boards : Board.all
-    @boards = Board.page(params[:page])
+    @boards = @boards.page(params[:page])
   end
 
   def new
@@ -28,11 +28,18 @@ class BoardsController < ApplicationController
   end
 
   def edit
+    @board.attributes = flash[:board] if flash[:board]
   end
 
   def update
-    @board.update(board_params)
-    redirect_to @board
+    if @board.update(board_params)
+      redirect_to @board
+    else
+      redirect_to :back, flash: {
+        board: @board,
+        error_messages: @board.errors.full_messages
+      }
+    end
   end
 
   def destroy

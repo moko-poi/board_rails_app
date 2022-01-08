@@ -2,6 +2,7 @@ class CommentsController < ApplicationController
   def create
     comment = Comment.new(comment_params)
     if comment.save
+      flash[:notice] = 'コメントを投稿しました'
       redirect_to comment.board
     else
       redirect_to :back, flash: {
@@ -14,7 +15,7 @@ class CommentsController < ApplicationController
   def destroy
     comment = Comment.find(params[:id])
     comment.delete
-    redirect_to comment.board, flash: { notice: 'コメントが削除されました '}
+    redirect_to comment.board, flash: { notice: 'コメントが削除されました' }
   end
 
   private
